@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\DocumentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -269,6 +268,11 @@ class Document
         }
 
         return $this;
+    }
+
+    public function getRentCount(): int
+    {
+        return count($this->rent);
     }
 
     public function removeRent(Rent $rent): self

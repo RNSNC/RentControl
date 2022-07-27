@@ -24,18 +24,20 @@ class CounterpartyParser
         {
             $data = array();
 
+            $data['id'] = $person->id_kontragent;
+            $object = $this->doctrine->getRepository(Counterparty::class)->findOneBy(['idCounterparty' => $data['id']]);
+
+            if ($object) {
+                continue;
+            }
+
             $data['title'] = $person->Naimenovanie;
-            $object = $this->doctrine->getRepository(Counterparty::class)->findOneBy(['title' => $data['title']]);
-
-            if ($object) continue;
-
-            if (isset($person->id_kontragent)) $data['id'] = $person->id_kontragent;
-            if (isset($person->NaimenovaniePolnoe)) $data['titleFull'] = $person->NaimenovaniePolnoe;
-            if (isset($person->INN)) $data['inn'] = $person->INN;
-            if (isset($person->TipLico)) $data['typePerson'] = $person->TipLico;
-            if (isset($person->DataSozdaniya)) $data['dateCreate'] = $person->DataSozdaniya;
-            if (isset($person->AdresProjivaniya)) $data['addressHome'] = $person->AdresProjivaniya;
-            if (isset($person->E_mail)) $data['email'] = $person->E_mail;
+            $data['titleFull'] = $person->NaimenovaniePolnoe;
+            $data['inn'] = $person->INN;
+            $data['typePerson'] = $person->TipLico;
+            $data['dateCreate'] = $person->DataSozdaniya;
+            $data['addressHome'] = $person->AdresProjivaniya;
+            $data['email'] = $person->E_mail;
             if (isset($person->Imya))
             {
                 $data['name'] = $person->Imya;
@@ -45,12 +47,9 @@ class CounterpartyParser
             $counterparty = $this->persistCounterparty($data);
             foreach ($person->Telefons as $phone)
             {
-                if (isset($phone->RolKontLica))
-                {
-                    $number = $phone->Telefon;
-                    $description = $phone->RolKontLica;
-                    $this->persistPhone($number, $description, $counterparty);
-                }
+                $number = $phone->Telefon;
+                $description = (isset($phone->RolKontLica)) ? $phone->RolKontLica : '';
+                $this->persistPhone($number, $description, $counterparty);
             }
         }
         $this->entity->flush();
@@ -59,14 +58,17 @@ class CounterpartyParser
     private function persistCounterparty($data)
     {
         $counterparty = new Counterparty();
-        if (isset($data['id']))$counterparty->setIdCounterparty($data['id']);
-        $counterparty->setTitle($data['title']);
-        if (isset($data['titleFull']))$counterparty->setTitleFull($data['titleFull']);
-        if (isset($data['inn']))$counterparty->setInn($data['inn']);
-        if (isset($data['typePerson']))$counterparty->setTypePerson($data['typePerson']);
-        if (isset($data['dateCreate']))$counterparty->setDateCreate(new \DateTime($data['dateCreate']));
-        if (isset($data['addressHome'])) $counterparty->setAddressHome($data['addressHome']);
-        if (isset($data['email']))$counterparty->setEmail($data['email']);
+        $counterparty
+            ->setIdCounterparty($data['id'])
+            ->setTitle($data['title'])
+            ->setTitleFull($data['titleFull'])
+            ->setInn($data['inn'])
+            ->setTypePerson($data['typePerson'])
+            ->setDateCreate(new \DateTime($data['dateCreate']))
+            ->setAddressHome($data['addressHome'])
+            ->setEmail($data['email'])
+        ;
+
         if (isset($data['name']))
         {
             $counterparty->setName($data['name']);

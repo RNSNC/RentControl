@@ -44,7 +44,12 @@ class Rent
 
     public function __toString()
     {
-        if ($this->instrumentName) return $this->instrumentName->getIdObjectRent();
+        if ($this->instrumentName)
+        {
+            $name = $this->instrumentName->getName();
+            $group = $this->instrumentName->getInstrumentGroup()->getName();
+            return "$group // $name";
+        }
         else return $this->stavka;
     }
 

@@ -81,6 +81,11 @@ class Storage
         return $this->documents;
     }
 
+    public function getDocumentsCount(): int
+    {
+        return count($this->documents);
+    }
+
     public function addDocument(Document $document): self
     {
         if (!$this->documents->contains($document)) {

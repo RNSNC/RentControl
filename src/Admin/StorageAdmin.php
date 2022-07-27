@@ -46,10 +46,10 @@ class StorageAdmin extends AbstractAdmin
             ->add('idSklad',null,[
                 'label'=> 'Ид склада',
             ])
-            ->add('name',null,[
+            ->addIdentifier('name',null,[
                 'label'=> 'Имя',
             ])
-            ->add('documents',null,[
+            ->add('documentsCount',null,[
                 'label'=> 'Документы',
             ])
         ;

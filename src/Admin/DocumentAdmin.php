@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\DateRangeFilter;
 
 class DocumentAdmin extends AbstractAdmin
 {
@@ -70,11 +71,21 @@ class DocumentAdmin extends AbstractAdmin
             ->add('summaArenda',null,[
                 'label' => 'Аренда',
             ])
-            ->add('dateCreate',null,[
+            ->add('dateCreate',DateRangeFilter::class,[
                 'label' => 'Дата создания',
+                'field_options' => [
+                    'field_options' => [
+                        'widget' => 'single_text',
+                    ],
+                ],
             ])
-            ->add('dateClose',null,[
+            ->add('dateClose',DateRangeFilter::class,[
                 'label' => 'Дата закрытия',
+                'field_options' => [
+                    'field_options' => [
+                        'widget' => 'single_text',
+                    ],
+                ],
             ])
             ->add('documentId',null,[
                 'label' => 'Ид документа',
@@ -85,18 +96,18 @@ class DocumentAdmin extends AbstractAdmin
             ->add('storage',null,[
                 'label' => 'Склад',
             ])
-            ->add('counterparties',null,[
-                'label' => 'Контрагент',
-            ])
-            ->add('rent',null,[
-                'label' => 'Аренда',
-            ])
         ;
     }
 
     protected function configureListFields(ListMapper $list): void
     {
         $list
+            ->add('_action', 'actions',[
+                'actions' => [
+                    'show' => [],
+                ],
+                'label' => false,
+            ])
             ->add('status',null,[
                 'label' => 'Статус',
             ])
@@ -114,12 +125,11 @@ class DocumentAdmin extends AbstractAdmin
             ])
             ->add('dateCreate',null,[
                 'label' => 'Дата создания',
+                'format' => 'd.m.Y',
             ])
             ->add('dateClose',null,[
                 'label' => 'Дата закрытия',
-            ])
-            ->add('documentId',null,[
-                'label' => 'Ид документа',
+                'format' => 'd.m.Y',
             ])
             ->add('documentNumber',null,[
                 'label' => 'Номер документа',
@@ -127,11 +137,8 @@ class DocumentAdmin extends AbstractAdmin
             ->add('storage',null,[
                 'label' => 'Склад',
             ])
-            ->add('counterparties',null,[
-                'label' => 'Контрагент',
-            ])
-            ->add('rent',null,[
-                'label' => 'Аренда',
+            ->add('rentCount', null,[
+                'label' => 'Кол-во аренд'
             ])
         ;
     }

@@ -47,17 +47,11 @@ class FullParser
 
     public function parserStatus($object, $status)
     {
-        echo "counterparty $status\n";
         $this->counterparty->counterpartyParser($object->$status->Kontragenti);
-        echo "instrument $status\n";
         $this->instrument->instrumentParser($object->$status->Obekti);
-        echo "place $status\n";
         $this->place->placeOfUseParser($object->$status->MestoEkspluatacii);
-        echo "storage $status\n";
         $this->storage->storageParser($object->$status->skladi);
-        echo "document $status\n";
         $this->document->documentParser($object->$status->Doki, $status);
-        echo "rent $status\n";
         $this->rent->rentParser($object->$status->Prodaji);
     }
 }
