@@ -30,7 +30,7 @@ class Storage
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Document::class, mappedBy="storage")
+     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="storage")
      */
     private $documents;
 
@@ -90,7 +90,7 @@ class Storage
     {
         if (!$this->documents->contains($document)) {
             $this->documents[] = $document;
-            $document->addStorage($this);
+            $document->setStorage($this);
         }
 
         return $this;
@@ -99,7 +99,9 @@ class Storage
     public function removeDocument(Document $document): self
     {
         if ($this->documents->removeElement($document)) {
-            $document->removeStorage($this);
+            if ($document->getStorage() === $this) {
+                $document->setStorage(null);
+            }
         }
 
         return $this;

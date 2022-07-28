@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\CounterpartyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -76,19 +75,19 @@ class Counterparty
     private $dateCreate;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Document::class, mappedBy="counterparties")
-     */
-    private $documents;
-
-    /**
      * @ORM\OneToMany(targetEntity=Phone::class, mappedBy="counterparty")
      */
     private $phone;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="counterparty")
+     */
+    private $documents;
+
     public function __construct()
     {
-        $this->documents = new ArrayCollection();
         $this->phone = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 
     public function __toString()
@@ -234,33 +233,6 @@ class Counterparty
     }
 
     /**
-     * @return Collection<int, Document>
-     */
-    public function getDocuments(): Collection
-    {
-        return $this->documents;
-    }
-
-    public function addDocument(Document $document): self
-    {
-        if (!$this->documents->contains($document)) {
-            $this->documents[] = $document;
-            $document->addCounterparty($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDocument(Document $document): self
-    {
-        if ($this->documents->removeElement($document)) {
-            $document->removeCounterparty($this);
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Phone>
      */
     public function getPhone(): Collection
@@ -283,6 +255,35 @@ class Counterparty
         if ($this->phone->removeElement($phone)) {
             if ($phone->getCounterparty() === $this) {
                 $phone->setCounterparty(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setCounterparty($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            if ($document->getCounterparty() === $this) {
+                $document->setCounterparty(null);
             }
         }
 

@@ -36,13 +36,16 @@ class CounterpartyParser
             $data['inn'] = $person->INN;
             $data['typePerson'] = $person->TipLico;
             $data['dateCreate'] = $person->DataSozdaniya;
-            $data['addressHome'] = $person->AdresProjivaniya;
-            $data['email'] = $person->E_mail;
+            if (isset($person->E_mail))
+            {
+                if ($person->E_mail) $data['email'] = $person->E_mail;
+            }
             if (isset($person->Imya))
             {
                 $data['name'] = $person->Imya;
                 $data['surname'] = $person->Famoliya;
                 $data['patronymic'] = $person->Ochestvo;
+                $data['addressHome'] = $person->AdresProjivaniya;
             }
             $counterparty = $this->persistCounterparty($data);
             foreach ($person->Telefons as $phone)
@@ -65,15 +68,16 @@ class CounterpartyParser
             ->setInn($data['inn'])
             ->setTypePerson($data['typePerson'])
             ->setDateCreate(new \DateTime($data['dateCreate']))
-            ->setAddressHome($data['addressHome'])
-            ->setEmail($data['email'])
         ;
-
+        if (isset($data['email'])) $counterparty->setEmail($data['email']);
         if (isset($data['name']))
         {
-            $counterparty->setName($data['name']);
-            $counterparty->setSurname($data['surname']);
-            $counterparty->setPatronymic($data['patronymic']);
+            $counterparty
+                ->setName($data['name'])
+                ->setSurname($data['surname'])
+                ->setPatronymic($data['patronymic'])
+                ->setAddressHome($data['addressHome'])
+            ;
         }
         $this->entity->persist($counterparty);
         return $counterparty;

@@ -26,9 +26,9 @@ class DocumentParser
             if ($objectDocument)
             {
                 $this->setGlobal(
-                    $objectDocument->getStorage()[0]->getName(),
+                    $objectDocument->getStorage()->getName(),
                     'old',
-                    $objectDocument->getCounterparties()[0]->getTypePerson(),
+                    $objectDocument->getCounterparty()->getTypePerson(),
                 );
                 if ($status == 'Opened' || $objectDocument->isStatus() == false ) continue;
                 $this->comparisonDocument($objectDocument, $data);
@@ -53,7 +53,15 @@ class DocumentParser
         $data['zalog'] = $doc->SummaZalog;
         $data['arenda'] = $doc->SummaArenda;
         $data['dateCreate'] = new \DateTime($doc->Date);
-        if (isset($doc->DataZakrit)) $data['dateClose'] = new \DateTime($doc->DataZakrit);
+        if (isset($doc->DataZakrit))
+        {
+            $data['dateClose'] = new \DateTime($doc->DataZakrit);
+            $date1 = new \DateTime($data['dateClose']->format('Y-m-d'));
+            $date2 = new \DateTime($data['dateCreate']->format('Y-m-d'));
+            $timeDuration = $date1->diff($date2);
+            if ($timeDuration->m) $data['duration'] = 'Месяцев: '.$timeDuration->m.', Дней: '.($timeDuration->d+1);
+            else $data['duration'] = "Дней: ".($timeDuration->d+1);
+        }
         $data['documentNumber'] = $doc->Nomer;
         if ($data['counterparty']->getDateCreate()->format('Ymd') == $data['dateCreate']->format('Ymd')) {
             $data['counterpartyNew'] = true;
@@ -79,8 +87,8 @@ class DocumentParser
     {
         $document = new Document();
         $document
-            ->addStorage($data['storage'])
-            ->addCounterparty($data['counterparty'])
+            ->setStorage($data['storage'])
+            ->setCounterparty($data['counterparty'])
             ->setStatus($data['status'])
             ->setCounterpartyNew($data['counterpartyNew'])
             ->setSummaDok($data['dok'])
@@ -90,7 +98,11 @@ class DocumentParser
             ->setDocumentId($data['documentId'])
             ->setDocumentNumber($data['documentNumber'])
         ;
-        if (isset($data['dateClose'])) $document->setDateClose($data['dateClose']);
+        if (isset($data['dateClose']))
+        {
+            $document->setDateClose($data['dateClose']);
+            $document->setDuration($data['duration']);
+        }
 
         $this->setGlobal(
             $data['storage']->getName(),

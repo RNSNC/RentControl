@@ -65,24 +65,27 @@ class Document
     private $documentNumber;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Storage::class, inversedBy="documents")
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $storage;
+    private $duration;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Counterparty::class, inversedBy="documents")
+     * @ORM\ManyToOne(targetEntity=Storage::class, inversedBy="documents")
      */
-    private $counterparties;
+    private $storage;
 
     /**
      * @ORM\OneToMany(targetEntity=Rent::class, mappedBy="document")
      */
     private $rent;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Counterparty::class, inversedBy="documents")
+     */
+    private $counterparty;
+
     public function __construct()
     {
-        $this->storage = new ArrayCollection();
-        $this->counterparties = new ArrayCollection();
         $this->rent = new ArrayCollection();
     }
 
@@ -204,60 +207,50 @@ class Document
         return $this;
     }
 
-    /**
-     * @return Collection<int, Storage>
-     */
-    public function getStorage(): Collection
+    public function getDuration(): ?string
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(?string $duration): self
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function getCounterparty(): ?Counterparty
+    {
+        return $this->counterparty;
+    }
+
+    public function setCounterparty(?Counterparty $counterparty): self
+    {
+        $this->counterparty = $counterparty;
+
+        return $this;
+    }
+
+    public function getStorage(): ?Storage
     {
         return $this->storage;
     }
 
-    public function addStorage(Storage $storage): self
+    public function setStorage(?Storage $storage): self
     {
-        if (!$this->storage->contains($storage)) {
-            $this->storage[] = $storage;
-        }
+        $this->storage = $storage;
 
         return $this;
     }
 
-    public function removeStorage(Storage $storage): self
-    {
-        $this->storage->removeElement($storage);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Counterparty>
-     */
-    public function getCounterparties(): Collection
-    {
-        return $this->counterparties;
-    }
-
-    public function addCounterparty(Counterparty $counterparty): self
-    {
-        if (!$this->counterparties->contains($counterparty)) {
-            $this->counterparties[] = $counterparty;
-        }
-
-        return $this;
-    }
-
-    public function removeCounterparty(Counterparty $counterparty): self
-    {
-        $this->counterparties->removeElement($counterparty);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Rent>
-     */
-    public function getRent(): Collection
+    public function getRent(): ?Collection
     {
         return $this->rent;
+    }
+
+    public function getRentCount(): ?int
+    {
+        return count($this->rent);
     }
 
     public function addRent(Rent $rent): self
@@ -270,15 +263,9 @@ class Document
         return $this;
     }
 
-    public function getRentCount(): int
-    {
-        return count($this->rent);
-    }
-
     public function removeRent(Rent $rent): self
     {
         if ($this->rent->removeElement($rent)) {
-            // set the owning side to null (unless already changed)
             if ($rent->getDocument() === $this) {
                 $rent->setDocument(null);
             }

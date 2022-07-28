@@ -33,7 +33,7 @@ class InstrumentParser
                 $this->doctrine->getManager()->flush();
             }
 
-            $name = $instrument->Naimenovanie;
+            $name = (isset($instrument->Naimenovanie)) ? $instrument->Naimenovanie : $instrument->Наименование;
             $instrumentName = new InstrumentName();
             $instrumentName->setName($name);
             $instrumentName->setInstrumentGroup($instrumentGroup);

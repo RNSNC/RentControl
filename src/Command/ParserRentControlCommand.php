@@ -6,6 +6,7 @@ use App\Parser\FullParser;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
 use TelegramBot\Api\BotApi;
 
 class ParserRentControlCommand extends Command
@@ -31,7 +32,9 @@ class ParserRentControlCommand extends Command
         $month = date('m');
         $day = date('d');
 
-        $this->rentControl->parserRent('https://www.mosstroyprokat.ru/jsondump/'.$year.'_'.$month.'_'.$day.'_data.json');
+//        $this->rentControl->parserRent('https://www.mosstroyprokat.ru/jsondump/'.$year.'_'.$month.'_'.$day.'_data.json');
+        $this->rentControl->parserRent('https://www.mosstroyprokat.ru/jsonorder/2022_07_28_01_32_data_order.json');
+//        $this->rentControl->parserRent('https://www.mosstroyprokat.ru/jsonorder/2022_07_28_02_08_data_order.json');
 
         $message = "Данные загрузки\n\n";
 
@@ -50,7 +53,7 @@ class ParserRentControlCommand extends Command
 
         $bot = new BotApi('5466762200:AAFJ8hFBtazT1Ur-yWkO3uhdGxKycqaHgUA');
         $bot->sendMessage(716087458, $message);
-        $bot->sendMessage(528094171, $message);
+//        $bot->sendMessage(528094171, $message);
 
         return Command::SUCCESS;
     }

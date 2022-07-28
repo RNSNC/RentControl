@@ -131,6 +131,9 @@ class DocumentAdmin extends AbstractAdmin
                 'label' => 'Дата закрытия',
                 'format' => 'd.m.Y',
             ])
+            ->add('duration', null,[
+                'label' => 'Длительность',
+            ])
             ->add('documentNumber',null,[
                 'label' => 'Номер документа',
             ])
