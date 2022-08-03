@@ -25,21 +25,16 @@ class DocumentParser
             $objectDocument = $this->getObject('documentId', $data['documentId'], Document::class);
             if ($objectDocument)
             {
-                $this->setGlobal(
-                    $objectDocument->getStorage()->getName(),
-                    'old',
-                    $objectDocument->getCounterparty()->getTypePerson(),
-                );
                 if ($status == 'Opened' || $objectDocument->isStatus() == false ) continue;
                 $this->comparisonDocument($objectDocument, $data);
                 continue;
             }
-            $this->protectedDocument($data);
+            $this->persistDocument($data);
         }
         $this->doctrine->getManager()->flush();
     }
 
-    private function getDataDocument($doc, $status)
+    private function getDataDocument($doc, $status): array
     {
         $data = array();
         $data['documentId'] = $doc->id_Document;
@@ -58,9 +53,8 @@ class DocumentParser
             $data['dateClose'] = new \DateTime($doc->DataZakrit);
             $date1 = new \DateTime($data['dateClose']->format('Y-m-d'));
             $date2 = new \DateTime($data['dateCreate']->format('Y-m-d'));
-            $timeDuration = $date1->diff($date2);
-            if ($timeDuration->m) $data['duration'] = 'Месяцев: '.$timeDuration->m.', Дней: '.($timeDuration->d+1);
-            else $data['duration'] = "Дней: ".($timeDuration->d+1);
+            $date3 = $date2->diff($date1);
+            $data['duration'] = $date3->days+1;
         }
         $data['documentNumber'] = $doc->Nomer;
         if ($data['counterparty']->getDateCreate()->format('Ymd') == $data['dateCreate']->format('Ymd')) {
@@ -76,6 +70,7 @@ class DocumentParser
         $document
             ->setStatus(false)
             ->setDateClose($data['dateClose'])
+            ->setDuration($data['duration'])
         ;
         if ($document->getSummaDok() != $data['dok']) $document->setSummaDok($data['dok']);
         if ($document->getSummaZalog() != $data['zalog']) $document->setSummaZalog($data['zalog']);
@@ -83,7 +78,7 @@ class DocumentParser
         $this->doctrine->getManager()->persist($document);
     }
 
-    private function protectedDocument($data)
+    private function persistDocument($data)
     {
         $document = new Document();
         $document
@@ -104,47 +99,11 @@ class DocumentParser
             $document->setDuration($data['duration']);
         }
 
-        $this->setGlobal(
-            $data['storage']->getName(),
-            'new',
-            $data['counterparty']->getTypePerson(),
-            $data['counterpartyNew'],
-        );
-
         $this->doctrine->getManager()->persist($document);
     }
 
     private function getObject($key, $val, $class)
     {
         return $this->doctrine->getRepository($class)->findOneBy([$key => $val]);
-    }
-
-    private function setGlobal($storage, $deal, $type, $statusType = null)
-    {
-        if (!isset($GLOBALS['storage'][$storage]))
-        {
-            $GLOBALS['storage'][$storage] = [
-                'deal' => [
-                    'new' => 0,
-                    'old' => 0,
-                ],
-                'fiz' => [
-                    'new' => 0,
-                    'old' => 0,
-                ],
-                'yr' => [
-                    'new' => 0,
-                    'old' => 0,
-                ],
-            ];
-        }
-        if ($type == 'Юр. лицо') $type = 'yr';
-        else $type = 'fiz';
-
-        if ($statusType) $statusType = 'new';
-        else $statusType = 'old';
-
-        $GLOBALS['storage'][$storage]['deal'][$deal]++;
-        $GLOBALS['storage'][$storage][$type][$statusType]++;
     }
 }

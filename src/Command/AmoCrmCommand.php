@@ -2,13 +2,21 @@
 
 namespace App\Command;
 
-use AmoCRM\Client\AmoCRMApiClient;
+use App\Model\AmoCRM\ClientCRM;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class AmoCrmCommand extends Command
 {
+    private $client;
+
+    public function __construct(ClientCRM $client)
+    {
+        parent::__construct();
+        $this->client = $client;
+    }
+
     protected function configure()
     {
         $this
@@ -18,15 +26,7 @@ class AmoCrmCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $apiClient = new AmoCRMApiClient(
-            '7d26328e-d661-43be-a558-8d70c3bd815d',
-            'tZJNNGjaxh0d5td7k2DMhWSdLKddA8fvCYCctcibRud738FadcBPkfYPUXYYt5eV',
-            'https://prokatm.amocrm.ru/oauth2/access_token',
-        );
-
-        $leads = $apiClient->leads()->get();
-
-        var_dump($leads);
+        $this->client->getClient();
 
         return Command::SUCCESS;
     }

@@ -55,9 +55,6 @@ class CounterpartyAdmin extends AbstractAdmin
             ->add('typePerson',null,[
                 'label' => 'Тип лица',
             ])
-            ->add('phone',null,[
-                'label' => 'Телефон',
-            ])
             ->add('dateCreate',null,[
                 'label' => 'Дата создания',
             ])
@@ -70,10 +67,10 @@ class CounterpartyAdmin extends AbstractAdmin
             ->add('idCounterparty',null,[
                 'label' => 'Ид контрагента',
             ])
-            ->add('title',null,[
+            ->addIdentifier('title',null,[
                 'label' => 'Наименование',
             ])
-            ->add('titleFull',null,[
+            ->addIdentifier('titleFull',null,[
                 'label' => 'Полное наименование',
             ])
             ->add('inn',null,[

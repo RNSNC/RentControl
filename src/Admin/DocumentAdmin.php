@@ -15,7 +15,7 @@ class DocumentAdmin extends AbstractAdmin
     {
         $form
             ->add('status',null,[
-                'label' => 'Статус',
+                'label' => 'Открытый',
             ])
             ->add('counterpartyNew',null,[
                 'label' => 'Новый контрагент',
@@ -44,7 +44,7 @@ class DocumentAdmin extends AbstractAdmin
             ->add('storage',null,[
                 'label' => 'Склад',
             ])
-            ->add('counterparties',null,[
+            ->add('counterparty',null,[
                 'label' => 'Контрагент',
             ])
             ->add('rent',null,[
@@ -57,7 +57,7 @@ class DocumentAdmin extends AbstractAdmin
     {
         $filter
             ->add('status',null,[
-                'label' => 'Статус',
+                'label' => 'Открытый',
             ])
             ->add('counterpartyNew',null,[
                 'label' => 'Новый контрагент',
@@ -109,7 +109,7 @@ class DocumentAdmin extends AbstractAdmin
                 'label' => false,
             ])
             ->add('status',null,[
-                'label' => 'Статус',
+                'label' => 'Открытый',
             ])
             ->add('counterpartyNew',null,[
                 'label' => 'Новый контрагент',
@@ -150,7 +150,7 @@ class DocumentAdmin extends AbstractAdmin
     {
         $show
             ->add('status',null,[
-                'label' => 'Статус',
+                'label' => 'Открытый',
             ])
             ->add('counterpartyNew',null,[
                 'label' => 'Новый контрагент',
@@ -179,7 +179,7 @@ class DocumentAdmin extends AbstractAdmin
             ->add('storage',null,[
                 'label' => 'Склад',
             ])
-            ->add('counterparties',null,[
+            ->add('counterparty',null,[
                 'label' => 'Контрагент',
             ])
             ->add('rent',null,[
