@@ -13,124 +13,62 @@ class CounterpartyAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $form): void
     {
         $form
-            ->add('idCounterparty',null,[
-                'label' => 'Ид контрагента',
-            ])
-            ->add('title',null,[
-                'label' => 'Наименование',
-            ])
-            ->add('titleFull',null,[
-                'label' => 'Полное наименование',
-            ])
-            ->add('inn',null,[
-                'label' => 'ИНН',
-            ])
-            ->add('typePerson',null,[
-                'label' => 'Тип лица',
-            ])
-            ->add('phone',null,[
-                'label' => 'Телефон',
-            ])
-            ->add('dateCreate',null,[
-                'label' => 'Дата создания',
-            ])
+            ->add('idCounterparty')
+            ->add('title')
+            ->add('titleFull')
+            ->add('inn')
+            ->add('typePerson')
+            ->add('phone')
+            ->add('dateCreate')
         ;
     }
 
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
-            ->add('idCounterparty',null,[
-                'label' => 'Ид контрагента',
-            ])
-            ->add('title',null,[
-                'label' => 'Наименование',
-            ])
-            ->add('titleFull',null,[
-                'label' => 'Полное наименование',
-            ])
-            ->add('inn',null,[
-                'label' => 'ИНН',
-            ])
-            ->add('typePerson',null,[
-                'label' => 'Тип лица',
-            ])
-            ->add('dateCreate',null,[
-                'label' => 'Дата создания',
-            ])
+            ->add('idCounterparty')
+            ->add('title')
+            ->add('titleFull')
+            ->add('inn')
+            ->add('typePerson')
+            ->add('dateCreate')
         ;
     }
 
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('idCounterparty',null,[
-                'label' => 'Ид контрагента',
-            ])
-            ->addIdentifier('title',null,[
-                'label' => 'Наименование',
-            ])
-            ->addIdentifier('titleFull',null,[
-                'label' => 'Полное наименование',
-            ])
-            ->add('inn',null,[
-                'label' => 'ИНН',
-            ])
-            ->add('typePerson',null,[
-                'label' => 'Тип лица',
-            ])
-            ->add('phone',null,[
-                'label' => 'Телефон',
-            ])
-            ->add('dateCreate',null,[
-                'label' => 'Дата создания',
-            ])
+            ->add('idCounterparty')
+            ->addIdentifier('title')
+            ->addIdentifier('titleFull')
+            ->add('inn')
+            ->add('typePerson')
+            ->add('phone')
+            ->add('dateCreate')
         ;
     }
 
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
-            ->add('idCounterparty',null,[
-                'label' => 'Ид контрагента',
-            ])
-            ->add('title',null,[
-                'label' => 'Наименование',
-            ])
-            ->add('titleFull',null,[
-                'label' => 'Полное наименование',
-            ])
-            ->add('inn',null,[
-                'label' => 'ИНН',
-            ])
-            ->add('typePerson',null,[
-                'label' => 'Тип лица',
-            ])
-            ->add('phone',null,[
-                'label' => 'Телефон',
-            ])
+            ->add('idCounterparty')
+            ->add('title')
+            ->add('titleFull')
+            ->add('inn')
+            ->add('typePerson')
+            ->add('phone')
         ;
         if($this->getSubject()->getName())
         {
             $show
-                ->add('name',null,[
-                    'label' => 'Имя',
-                ])
-                ->add('surname',null,[
-                    'label' => 'Фамилия',
-                ])
-                ->add('patronymic',null,[
-                    'label' => 'Отчество',
-                ])
+                ->add('name')
+                ->add('surname')
+                ->add('patronymic')
             ;
         }
         $show
-            ->add('dateCreate',null,[
-                'label' => 'Дата создания',
-            ])
-            ->add('documents', null,[
-                'label' => 'Документы',
-            ])
+            ->add('dateCreate')
+            ->add('documents')
         ;
     }
 }

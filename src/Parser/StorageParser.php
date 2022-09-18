@@ -19,13 +19,12 @@ class StorageParser
         foreach ($storages as $storage)
         {
             $id = $storage->id_sklad;
-            if (isset($storage->Naimenovanie)) $name = $storage->Naimenovanie;
             if ($this->doctrine->getRepository(Storage::class)->findOneBy(['idSklad'=>$id]))
             {
                 continue;
             }
             $storageNew = new Storage();
-            if (isset($storage->Naimenovanie)) $storageNew->setName($name);
+            if (isset($storage->Naimenovanie)) $storageNew->setName($storage->Naimenovanie);
             $storageNew->setIdSklad($id);
             $this->doctrine->getManager()->persist($storageNew);
         }

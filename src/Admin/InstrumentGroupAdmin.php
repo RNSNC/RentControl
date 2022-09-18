@@ -13,36 +13,28 @@ class InstrumentGroupAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $form): void
     {
         $form
-            ->add('name',null,[
-                'label' => 'Название',
-            ])
+            ->add('name')
         ;
     }
 
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
-            ->add('name',null,[
-                'label' => 'Название',
-            ])
+            ->add('name')
         ;
     }
 
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('name',null,[
-                'label' => 'Название',
-            ])
+            ->add('name')
         ;
     }
 
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
-            ->add('name',null,[
-                'label' => 'Название',
-            ])
+            ->add('name')
         ;
     }
 }

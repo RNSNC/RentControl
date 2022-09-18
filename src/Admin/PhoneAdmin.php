@@ -13,60 +13,36 @@ class PhoneAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $form): void
     {
         $form
-            ->add('number',null,[
-                'label' => 'Номер',
-            ])
-            ->add('description',null,[
-                'label' => 'Описание',
-            ])
-            ->add('counterparty',null,[
-                'label' => 'Контрагент',
-            ])
+            ->add('number')
+            ->add('description')
+            ->add('counterparty')
         ;
     }
 
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
-            ->add('number',null,[
-                'label' => 'Номер',
-            ])
-            ->add('description',null,[
-                'label' => 'Описание',
-            ])
-            ->add('counterparty',null,[
-                'label' => 'Контрагент',
-            ])
+            ->add('number')
+            ->add('description')
+            ->add('counterparty')
         ;
     }
 
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('number',null,[
-                'label' => 'Номер',
-            ])
-            ->add('description',null,[
-                'label' => 'Описание',
-            ])
-            ->add('counterparty',null,[
-                'label' => 'Контрагент',
-            ])
+            ->add('number')
+            ->add('description')
+            ->add('counterparty')
         ;
     }
 
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
-            ->add('number',null,[
-                'label' => 'Номер',
-            ])
-            ->add('description',null,[
-                'label' => 'Описание',
-            ])
-            ->add('counterparty',null,[
-                'label' => 'Контрагент',
-            ])
+            ->add('number')
+            ->add('description')
+            ->add('counterparty')
         ;
     }
 }

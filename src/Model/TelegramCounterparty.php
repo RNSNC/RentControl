@@ -10,9 +10,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class TelegramCounterparty
 {
-    private $parameter;
+    private ParameterBagInterface $parameter;
 
-    private $doctrine;
+    private ManagerRegistry $doctrine;
 
     public function __construct(
         ParameterBagInterface $parameterBag,

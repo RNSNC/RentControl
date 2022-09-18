@@ -7,12 +7,13 @@ use Doctrine\Persistence\ManagerRegistry;
 use GuzzleHttp\Client;
 use League\OAuth2\Client\Token\AccessToken;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use DateTime;
 
 class AuthToken
 {
-    private $doctrine;
+    private ManagerRegistry $doctrine;
 
-    private $parameter;
+    private ParameterBagInterface $parameter;
 
     public function __construct(
         ManagerRegistry $doctrine,
@@ -23,17 +24,18 @@ class AuthToken
         $this->parameter = $parameter;
     }
 
-    public function getAccessToken(): ?AccessToken
+    public function getAccessToken(): AccessToken
     {
         $token = $this->getDataToken();
 
-        if (!$token || $token->getDateRefreshToken() < new \DateTime() ) {
-            $this->setNewToken($this->parameter->get('crmCode'), "authorization_code");
+        if (!$token || $token->getDateRefreshToken() < new DateTime() ) {
+            $this->setNewToken("authorization_code", $this->parameter->get('crmCode'));
             $token = $this->getDataToken();
         }
 
-        if ($token->getDateAccessToken() < new \DateTime()){
-            $this->setNewToken($token->getRefreshToken(), 'refresh_token');
+        if ($token->getDateAccessToken() < new DateTime()){
+            $this->setNewToken("refresh_token", $token->getRefreshToken());
+            $token = $this->getDataToken();
         }
 
         return new AccessToken([
@@ -42,22 +44,22 @@ class AuthToken
         ]);
     }
 
-    private function setNewToken($code, $grantType): void
+    private function setNewToken($grantType, $code): void
     {
         $client = new Client();
+
+        $parameter = ($grantType == "refresh_token") ? "refresh_token" : "code";
 
         $response = $client->request(
             'POST',
             'https://prokatm.amocrm.ru/oauth2/access_token',
-            [
-                'form_params'  =>  [
-                    "client_id" => $this->parameter->get('crmClientId'),
-                    "client_secret" => $this->parameter->get('crmClientSecret'),
-                    "grant_type" => $grantType,
-                    "code" => $code,
-                    "redirect_uri" => $this->parameter->get('crmRedirectUri'),
-                ]
-            ]
+            array('form_params' => [
+                "client_id" => $this->parameter->get('crmClientId'),
+                "client_secret" => $this->parameter->get('crmClientSecret'),
+                "grant_type" => $grantType,
+                $parameter => $code,
+                "redirect_uri" => $this->parameter->get('crmRedirectUri'),
+            ])
         );
 
         $jsonResponse = json_decode($response->getBody());
@@ -69,8 +71,8 @@ class AuthToken
             ->setExpiresIn($jsonResponse->expires_in)
             ->setAccessToken($jsonResponse->access_token)
             ->setRefreshToken($jsonResponse->refresh_token)
-            ->setDateAccessToken((new \DateTime())->modify('+'.$jsonResponse->expires_in.' second'))
-            ->setDateRefreshToken((new \DateTime())->modify('+3 month'))
+            ->setDateAccessToken((new DateTime())->modify('+'.$jsonResponse->expires_in.' second'))
+            ->setDateRefreshToken((new DateTime())->modify('+3 month'))
         ;
         $this->doctrine->getManager()->persist($token);
         $this->doctrine->getManager()->flush();

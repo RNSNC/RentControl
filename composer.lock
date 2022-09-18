@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e7889987a61adcaa4fa2a80a13fcc8f",
+    "content-hash": "712397547d45663e67d9f4b4c2963561",
     "packages": [
         {
             "name": "amocrm/amocrm-api-library",

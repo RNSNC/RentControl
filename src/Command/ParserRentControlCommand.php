@@ -9,10 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ParserRentControlCommand extends Command
 {
-    /**
-     * @var FullParser
-     */
-    private $rentControl;
+    private FullParser $rentControl;
 
     public function __construct(FullParser $rentControl)
     {

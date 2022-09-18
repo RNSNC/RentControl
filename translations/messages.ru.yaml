@@ -1,0 +1,58 @@
+Document: Документ
+Documents: Документы
+Document List: Список документов
+Counterparty: Контрагент
+Counterparties: Контрагенты
+Counterparty List: Список контрагентов
+Instrument Group: Группа инструмента
+Instrument Groups: Группы инструментов
+Instrument Group List: Список групп инструментов
+Instrument Name: Название инструмента
+Instrument Names: Названия инструментов
+Instrument Name List: Список названий инструментов
+Phone: Телефон
+Phones: Телефоны
+Phone List: Список телефонов
+Place Of Use: Место дислокации
+Places Of Use: Места дислокации
+Place Of Use List: Список мест дислокаций
+Rent: Аренда
+Rents: Аренды
+Rent List: Список аренд
+Storage: Склад
+Storages: Склады
+Storage List: Список складов
+Subdivision: Подразделение
+Subdivisions: Подразделения
+Subdivision List: Список подразделений
+
+Id Subdivision: Ид подразделения
+Id Counterparty: Ид контрагента
+Title: Наименование
+Title Full: Наименование полное
+Inn: ИНН
+Type Person: Тип лица
+Date Create: Дата создания
+Name: Наименование
+Surname: Фамилия
+Patronymic: Отчество
+Opened: Открытый
+Counterparty New: Новый контрагент
+Summa Dok: Док
+Summa Zalog: Залог
+Summa Arenda: Аренда
+Date Close: Дата закрытия
+Document Id: Ид документа
+Document Number: Номер документа
+Rent Count: Кол-во аренд
+Duration: Длительность
+Id Object Rent: Ид обьекта аренды
+Number: Номер
+Description: Описание
+Id Rent Place: Ид места аренды
+Klw: Количество
+Stavka: Ставка
+Zalog: Залог
+Id Sklad: Ид склада
+Documents Count: Количество документов
+Instrument Name Instrument Group: Группа инструмента

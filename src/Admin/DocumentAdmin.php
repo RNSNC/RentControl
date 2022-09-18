@@ -14,42 +14,18 @@ class DocumentAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $form): void
     {
         $form
-            ->add('status',null,[
-                'label' => 'Открытый',
-            ])
-            ->add('counterpartyNew',null,[
-                'label' => 'Новый контрагент',
-            ])
-            ->add('summaDok',null,[
-                'label' => 'Док',
-            ])
-            ->add('summaZalog',null,[
-                'label' => 'Залог',
-            ])
-            ->add('summaArenda',null,[
-                'label' => 'Аренда',
-            ])
-            ->add('dateCreate',null,[
-                'label' => 'Дата создания',
-            ])
-            ->add('dateClose',null,[
-                'label' => 'Дата закрытия',
-            ])
-            ->add('documentId',null,[
-                'label' => 'Ид документа',
-            ])
-            ->add('documentNumber',null,[
-                'label' => 'Номер документа',
-            ])
-            ->add('storage',null,[
-                'label' => 'Склад',
-            ])
-            ->add('counterparty',null,[
-                'label' => 'Контрагент',
-            ])
-            ->add('rent',null,[
-                'label' => 'Аренда',
-            ])
+            ->add('status')
+            ->add('counterpartyNew')
+            ->add('summaDok')
+            ->add('summaZalog')
+            ->add('summaArenda')
+            ->add('dateCreate')
+            ->add('dateClose')
+            ->add('documentId')
+            ->add('documentNumber')
+            ->add('storage')
+            ->add('counterparty')
+            ->add('rent')
         ;
     }
 
@@ -57,22 +33,13 @@ class DocumentAdmin extends AbstractAdmin
     {
         $filter
             ->add('status',null,[
-                'label' => 'Открытый',
+                'label' => 'Opened',
             ])
-            ->add('counterpartyNew',null,[
-                'label' => 'Новый контрагент',
-            ])
-            ->add('summaDok',null,[
-                'label' => 'Док',
-            ])
-            ->add('summaZalog',null,[
-                'label' => 'Залог',
-            ])
-            ->add('summaArenda',null,[
-                'label' => 'Аренда',
-            ])
+            ->add('counterpartyNew')
+            ->add('summaDok')
+            ->add('summaZalog')
+            ->add('summaArenda')
             ->add('dateCreate',DateRangeFilter::class,[
-                'label' => 'Дата создания',
                 'field_options' => [
                     'field_options' => [
                         'widget' => 'single_text',
@@ -80,22 +47,16 @@ class DocumentAdmin extends AbstractAdmin
                 ],
             ])
             ->add('dateClose',DateRangeFilter::class,[
-                'label' => 'Дата закрытия',
                 'field_options' => [
                     'field_options' => [
                         'widget' => 'single_text',
                     ],
                 ],
             ])
-            ->add('documentId',null,[
-                'label' => 'Ид документа',
-            ])
-            ->add('documentNumber',null,[
-                'label' => 'Номер документа',
-            ])
-            ->add('storage',null,[
-                'label' => 'Склад',
-            ])
+            ->add('documentId')
+            ->add('documentNumber')
+            ->add('storage')
+            ->add('subdivision')
         ;
     }
 
@@ -109,40 +70,22 @@ class DocumentAdmin extends AbstractAdmin
                 'label' => false,
             ])
             ->add('status',null,[
-                'label' => 'Открытый',
+                'label' => 'Opened',
             ])
-            ->add('counterpartyNew',null,[
-                'label' => 'Новый контрагент',
-            ])
-            ->add('summaDok',null,[
-                'label' => 'Док',
-            ])
-            ->add('summaZalog',null,[
-                'label' => 'Залог',
-            ])
-            ->add('summaArenda',null,[
-                'label' => 'Аренда',
-            ])
+            ->add('counterpartyNew')
+            ->add('summaDok')
+            ->add('summaZalog')
+            ->add('summaArenda')
             ->add('dateCreate',null,[
-                'label' => 'Дата создания',
                 'format' => 'd.m.Y',
             ])
             ->add('dateClose',null,[
-                'label' => 'Дата закрытия',
                 'format' => 'd.m.Y',
             ])
-            ->add('duration', null,[
-                'label' => 'Длительность',
-            ])
-            ->add('documentNumber',null,[
-                'label' => 'Номер документа',
-            ])
-            ->add('storage',null,[
-                'label' => 'Склад',
-            ])
-            ->add('rentCount', null,[
-                'label' => 'Кол-во аренд'
-            ])
+            ->add('duration')
+            ->add('documentNumber')
+            ->add('subdivision')
+            ->add('rentCount')
         ;
     }
 
@@ -150,41 +93,20 @@ class DocumentAdmin extends AbstractAdmin
     {
         $show
             ->add('status',null,[
-                'label' => 'Открытый',
+                'label' => 'Opened',
             ])
-            ->add('counterpartyNew',null,[
-                'label' => 'Новый контрагент',
-            ])
-            ->add('summaDok',null,[
-                'label' => 'Док',
-            ])
-            ->add('summaZalog',null,[
-                'label' => 'Залог',
-            ])
-            ->add('summaArenda',null,[
-                'label' => 'Аренда',
-            ])
-            ->add('dateCreate',null,[
-                'label' => 'Дата создания',
-            ])
-            ->add('dateClose',null,[
-                'label' => 'Дата закрытия',
-            ])
-            ->add('documentId',null,[
-                'label' => 'Ид документа',
-            ])
-            ->add('documentNumber',null,[
-                'label' => 'Номер документа',
-            ])
-            ->add('storage',null,[
-                'label' => 'Склад',
-            ])
-            ->add('counterparty',null,[
-                'label' => 'Контрагент',
-            ])
-            ->add('rent',null,[
-                'label' => 'Аренда',
-            ])
+            ->add('counterpartyNew')
+            ->add('summaDok')
+            ->add('summaZalog')
+            ->add('summaArenda')
+            ->add('dateCreate')
+            ->add('dateClose')
+            ->add('documentId')
+            ->add('documentNumber')
+            ->add('storage')
+            ->add('subdivision')
+            ->add('counterparty')
+            ->add('rent')
         ;
     }
 }

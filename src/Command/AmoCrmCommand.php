@@ -2,19 +2,19 @@
 
 namespace App\Command;
 
-use App\Model\AmoCRM\ClientCRM;
+use App\Model\AmoCRM\AmoCRM;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class AmoCrmCommand extends Command
 {
-    private $client;
+    private AmoCRM $amoCRM;
 
-    public function __construct(ClientCRM $client)
+    public function __construct(AmoCRM $amoCRM)
     {
         parent::__construct();
-        $this->client = $client;
+        $this->amoCRM = $amoCRM;
     }
 
     protected function configure()
@@ -26,7 +26,7 @@ class AmoCrmCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->client->getClient();
+        $this->amoCRM->amoRentControl();
 
         return Command::SUCCESS;
     }

@@ -8,12 +8,12 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 
-class StorageAdmin extends AbstractAdmin
+class SubdivisionAdmin extends AbstractAdmin
 {
     protected function configureFormFields(FormMapper $form): void
     {
         $form
-            ->add('idSklad')
+            ->add('idSubdivision')
             ->add('name')
             ->add('documents')
         ;
@@ -22,7 +22,7 @@ class StorageAdmin extends AbstractAdmin
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
-            ->add('idSklad')
+            ->add('idSubdivision')
             ->add('name')
             ->add('documents')
         ;
@@ -31,16 +31,16 @@ class StorageAdmin extends AbstractAdmin
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('idSklad')
-            ->addIdentifier('name')
-            ->add('documentsCount')
+            ->add('idSubdivision')
+            ->add('name')
+            ->add('documents')
         ;
     }
 
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
-            ->add('idSklad')
+            ->add('idSubdivision')
             ->add('name')
             ->add('documents')
         ;

@@ -13,72 +13,40 @@ class InstrumentNameAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $form): void
     {
         $form
-            ->add('name',null,[
-                'label' => 'Название',
-            ])
-            ->add('instrumentGroup',null,[
-                'label' => 'Группа',
-            ])
-            ->add('idObjectRent',null,[
-                'label' => 'Ид обьекта',
-            ])
-            ->add('rents',null,[
-                'label' => 'Аренда',
-            ])
+            ->add('name')
+            ->add('instrumentGroup')
+            ->add('idObjectRent')
+            ->add('rents')
         ;
     }
 
     protected function configureDatagridFilters(DatagridMapper $filter): void
     {
         $filter
-            ->add('name',null,[
-                'label' => 'Название',
-            ])
-            ->add('instrumentGroup',null,[
-                'label' => 'Группа',
-            ])
-            ->add('idObjectRent',null,[
-                'label' => 'Ид обьекта',
-            ])
-            ->add('rents',null,[
-                'label' => 'Аренда',
-            ])
+            ->add('name')
+            ->add('instrumentGroup')
+            ->add('idObjectRent')
+            ->add('rents')
         ;
     }
 
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('name',null,[
-                'label' => 'Название',
-            ])
-            ->add('instrumentGroup',null,[
-                'label' => 'Группа',
-            ])
-            ->add('idObjectRent',null,[
-                'label' => 'Ид обьекта',
-            ])
-            ->add('rents',null,[
-                'label' => 'Аренда',
-            ])
+            ->add('name')
+            ->add('instrumentGroup')
+            ->add('idObjectRent')
+            ->add('rents')
         ;
     }
 
     protected function configureShowFields(ShowMapper $show): void
     {
         $show
-            ->add('name',null,[
-                'label' => 'Название',
-            ])
-            ->add('instrumentGroup',null,[
-                'label' => 'Группа',
-            ])
-            ->add('idObjectRent',null,[
-                'label' => 'Ид обьекта',
-            ])
-            ->add('rents',null,[
-                'label' => 'Аренда',
-            ])
+            ->add('name')
+            ->add('instrumentGroup')
+            ->add('idObjectRent')
+            ->add('rents')
         ;
     }
 }

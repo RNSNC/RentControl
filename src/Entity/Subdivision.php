@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\StorageRepository;
+use App\Repository\SubdivisionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=StorageRepository::class)
+ * @ORM\Entity(repositoryClass=SubdivisionRepository::class)
  */
-class Storage
+class Subdivision
 {
     /**
      * @ORM\Id
@@ -22,7 +22,7 @@ class Storage
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $idSklad;
+    private $idSubdivision;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -30,7 +30,7 @@ class Storage
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="storage")
+     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="subdivision")
      */
     private $documents;
 
@@ -49,16 +49,14 @@ class Storage
         return $this->id;
     }
 
-    public function getIdSklad(): ?string
+    public function getIdSubdivision(): ?string
     {
-        return $this->idSklad;
+        return $this->idSubdivision;
     }
 
-    public function setIdSklad(?string $idSklad): self
+    public function setIdSubdivision(?string $idSubdivision): void
     {
-        $this->idSklad = $idSklad;
-
-        return $this;
+        $this->idSubdivision = $idSubdivision;
     }
 
     public function getName(): ?string
@@ -66,11 +64,9 @@ class Storage
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(?string $name): void
     {
         $this->name = $name;
-
-        return $this;
     }
 
     public function getDocuments(): Collection
@@ -78,16 +74,11 @@ class Storage
         return $this->documents;
     }
 
-    public function getDocumentsCount(): int
-    {
-        return count($this->documents);
-    }
-
     public function addDocument(Document $document): self
     {
         if (!$this->documents->contains($document)) {
             $this->documents[] = $document;
-            $document->setStorage($this);
+            $document->setSubdivision($this);
         }
 
         return $this;
@@ -96,8 +87,8 @@ class Storage
     public function removeDocument(Document $document): self
     {
         if ($this->documents->removeElement($document)) {
-            if ($document->getStorage() === $this) {
-                $document->setStorage(null);
+            if ($document->getSubdivision() === $this) {
+                $document->setSubdivision(null);
             }
         }
 

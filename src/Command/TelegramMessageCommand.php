@@ -9,10 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TelegramMessageCommand extends Command
 {
-    /**
-     * @var TelegramCounterparty
-     */
-    private $telegramCounterparty;
+    private TelegramCounterparty $telegramCounterparty;
 
     public function __construct(TelegramCounterparty $telegramCounterparty)
     {

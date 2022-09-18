@@ -84,6 +84,11 @@ class Document
      */
     private $counterparty;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Subdivision::class, inversedBy="documents")
+     */
+    private $subdivision;
+
     public function __construct()
     {
         $this->rent = new ArrayCollection();
@@ -270,6 +275,18 @@ class Document
                 $rent->setDocument(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSubdivision(): ?Subdivision
+    {
+        return $this->subdivision;
+    }
+
+    public function setSubdivision(?Subdivision $subdivision): self
+    {
+        $this->subdivision = $subdivision;
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace App\Parser;
 use App\Entity\Document;
 use App\Entity\Storage;
 use App\Entity\Counterparty;
+use App\Entity\Subdivision;
 use Doctrine\Persistence\ManagerRegistry;
 
 class DocumentParser
@@ -39,6 +40,7 @@ class DocumentParser
         $data = array();
         $data['documentId'] = $doc->id_Document;
         $data['storage'] = $this->getObject('idSklad', $doc->id_sklad, Storage::class);
+        $data['subdivision'] = $this->getObject('idSubdivision', $doc->id_Podrazdelenie, Subdivision::class);
         $data['counterparty'] = $this->getObject('idCounterparty',$doc->id_kontragent, Counterparty::class);
 
         if ($status == 'Opened') $data['status'] = true;
@@ -47,7 +49,7 @@ class DocumentParser
         $data['dok'] = $doc->SummaDok;
         $data['zalog'] = $doc->SummaZalog;
         $data['arenda'] = $doc->SummaArenda;
-        $data['dateCreate'] = new \DateTime($doc->Date);
+        $data['dateCreate'] = new \DateTime($doc->DateAktaVidachi);
         if (isset($doc->DataZakrit))
         {
             $data['dateClose'] = new \DateTime($doc->DataZakrit);
@@ -84,6 +86,7 @@ class DocumentParser
         $document
             ->setStorage($data['storage'])
             ->setCounterparty($data['counterparty'])
+            ->setSubdivision($data['subdivision'])
             ->setStatus($data['status'])
             ->setCounterpartyNew($data['counterpartyNew'])
             ->setSummaDok($data['dok'])

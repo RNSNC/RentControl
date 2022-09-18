@@ -42,7 +42,7 @@ class DocumentRepository extends ServiceEntityRepository
     /**
      * @return Document[] Returns an array of Document objects
      */
-    public function findAllGreaterDate($value): array
+    public function findAllGreaterDate($value)
     {
         return $this->createQueryBuilder('d')
             ->andWhere('d.dateCreate >= :val')
@@ -51,14 +51,4 @@ class DocumentRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-
-//    public function findOneBySomeField($value): ?Document
-//    {
-//        return $this->createQueryBuilder('d')
-//            ->andWhere('d.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

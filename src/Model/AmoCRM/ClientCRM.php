@@ -3,17 +3,13 @@
 namespace App\Model\AmoCRM;
 
 use AmoCRM\Client\AmoCRMApiClient;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class ClientCRM
 {
-    /**
-     * @var AuthToken
-     */
-    private $authToken;
+    private AuthToken $authToken;
 
-    private $parameter;
+    private ParameterBagInterface $parameter;
 
     public function __construct(
         AuthToken $authToken,
@@ -24,7 +20,7 @@ class ClientCRM
         $this->parameter = $parameter;
     }
 
-    public function getClient()
+    public function getClient(): AmoCRMApiClient
     {
         $accessToken = $this->authToken->getAccessToken();
         $client = new AmoCRMApiClient(
@@ -38,9 +34,6 @@ class ClientCRM
             ->setAccountBaseDomain('prokatm.amocrm.ru')
         ;
 
-        $model = $client->leads()->getOne(27485736);
-        $model->setName('test222');
-        $model->setStatusId(49417662);
-        $client->leads()->updateOne($model);
+        return $client;
     }
 }
