@@ -7,15 +7,18 @@ use AmoCRM\Collections\ContactsCollection;
 use AmoCRM\Exceptions\AmoCRMApiNoContentException;
 use AmoCRM\Filters\ContactsFilter;
 use App\Entity\Counterparty;
-use Doctrine\Common\Collections\Collection;
 use AmoCRM\Collections\CustomFieldsValuesCollection;
 use AmoCRM\Models\ContactModel;
-use AmoCRM\Models\CustomFieldsValues\MultitextCustomFieldValuesModel;
-use AmoCRM\Models\CustomFieldsValues\ValueCollections\MultitextCustomFieldValueCollection;
-use AmoCRM\Models\CustomFieldsValues\ValueModels\MultitextCustomFieldValueModel;
 
 class ContactCRM
 {
+    private ValuesCRM $values;
+
+    public function __construct(ValuesCRM $values)
+    {
+        $this->values = $values;
+    }
+
     public function checkContact(AmoCRMApiClient $client, Counterparty $counterparty): ContactsCollection
     {
         $phones = $counterparty->getPhone()->getValues();
@@ -29,8 +32,8 @@ class ContactCRM
             }catch (AmoCRMApiNoContentException) {
                 continue;
             }
-            $contact = $contacts->first();
-            $objectNumber = $contact
+            $objectNumber = $contacts
+                ->first()
                 ->getCustomFieldsValues()
                 ->getBy('fieldId', 82553)
                 ->getValues()
@@ -38,35 +41,28 @@ class ContactCRM
                 ->getValue()
             ;
             if ($number == $objectNumber){
-                return (new ContactsCollection())->add($contact);
+                $contact = $this->setContact($contacts->first(), $counterparty);
+                $client->contacts()->updateOne($contact);
+                break;
             }
         }
-        $contact = $this->setContact($counterparty);
-        $client->contacts()->addOne($contact);
+        if (!isset($contact)){
+            $contact = $this->setContact(new ContactModel(), $counterparty);
+            $client->contacts()->addOne($contact);
+        }
         return (new ContactsCollection())->add($contact);
     }
 
-    private function setContact(Counterparty $counterparty): ContactModel
+    public function setContact(ContactModel $contact, Counterparty $counterparty): ContactModel
     {
-        $contact = new ContactModel();
         $contact->setName($counterparty->getTitleFull());
-        $phones = $this->setContactPhones($counterparty->getPhone());
-        $contact->setCustomFieldsValues($phones);
+        $phones = $this->values->setPhonesContact($counterparty->getPhone());
+        $typeCounterparty = $this->values->setTypePersonContact($counterparty->getTypePerson());
+        $contact->setCustomFieldsValues(
+            (new CustomFieldsValuesCollection())
+            ->add($phones)
+            ->add($typeCounterparty)
+        );
         return $contact;
-    }
-
-    private function setContactPhones(Collection $phones): CustomFieldsValuesCollection
-    {
-        $model = new MultitextCustomFieldValuesModel();
-        $model->setFieldId(82553);
-        $valueCollection = new MultitextCustomFieldValueCollection();
-        foreach ($phones as $phone)
-        {
-            $valueModel = new MultitextCustomFieldValueModel();
-            $valueModel->setValue('+7'.$phone->getNumber());
-            $valueCollection->add($valueModel);
-        }
-        $model->setValues($valueCollection);
-        return (new CustomFieldsValuesCollection())->add($model);
     }
 }

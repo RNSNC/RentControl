@@ -21,12 +21,18 @@ class AmoCrmCommand extends Command
     {
         $this
             ->setName('amocrm')
+            ->addArgument(
+                name: 'date',
+                default: 1,
+            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->amoCRM->amoRentControl();
+        $count = $input->getArgument('date');
+        $date = date('d-m-Y', strtotime("-$count day"));
+        $this->amoCRM->amoRentControl($date);
 
         return Command::SUCCESS;
     }

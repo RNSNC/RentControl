@@ -5,12 +5,14 @@ namespace App\Parser;
 use App\Entity\Counterparty;
 use App\Entity\Phone;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use function Composer\Autoload\includeFile;
 
 class CounterpartyParser
 {
-    private $doctrine;
+    private ManagerRegistry $doctrine;
 
-    private $entity;
+    private ObjectManager $entity;
 
     public function __construct(ManagerRegistry $doctrine)
     {
@@ -36,6 +38,7 @@ class CounterpartyParser
             $data['inn'] = $person->INN;
             $data['typePerson'] = $person->TipLico;
             $data['dateCreate'] = $person->DataSozdaniya;
+            $data['phone'] = $person->Telefons;
             if (isset($person->E_mail))
             {
                 if ($person->E_mail) $data['email'] = $person->E_mail;
@@ -47,18 +50,12 @@ class CounterpartyParser
                 $data['patronymic'] = $person->Ochestvo;
                 $data['addressHome'] = $person->AdresProjivaniya;
             }
-            $counterparty = $this->persistCounterparty($data);
-            foreach ($person->Telefons as $phone)
-            {
-                $number = $phone->Telefon;
-                $description = (isset($phone->RolKontLica)) ? $phone->RolKontLica : '';
-                $this->persistPhone($number, $description, $counterparty);
-            }
+            $this->setCounterparty($data);
         }
         $this->entity->flush();
     }
 
-    private function persistCounterparty($data)
+    private function setCounterparty($data): void
     {
         $counterparty = new Counterparty();
         $counterparty
@@ -79,11 +76,20 @@ class CounterpartyParser
                 ->setAddressHome($data['addressHome'])
             ;
         }
+        $numbers = array();
+        foreach ($data['phone'] as $phone)
+        {
+            $numbers[$phone->Telefon] = (isset($phone->RolKontLica)) ? $phone->RolKontLica : '';
+        }
+
+        foreach ($numbers as $number => $description)
+        {
+            $this->setPhone($number, $description, $counterparty);
+        }
         $this->entity->persist($counterparty);
-        return $counterparty;
     }
 
-    private function persistPhone($number, $description, $counterparty)
+    private function setPhone($number, $description, $counterparty): void
     {
         $phone = new Phone();
         $phone->setNumber($number);

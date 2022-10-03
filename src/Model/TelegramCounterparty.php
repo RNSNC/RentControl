@@ -23,10 +23,14 @@ class TelegramCounterparty
         $this->doctrine = $doctrine;
     }
 
-    public function sendInChat($parameter, $date)
+    public function sendInChat($date, ...$parameters)
     {
         $bot = new BotApi($this->parameter->get('telegramToken'));
-        $id = $this->parameter->get($parameter);
+        $ids = array();
+        foreach ($parameters as $parameter)
+        {
+            $ids[] = $this->parameter->get($parameter);
+        }
 
         $documents = $this->doctrine->getRepository(Document::class)->findAllGreaterDate(['dateCreate'=> $date]);
 
@@ -34,10 +38,10 @@ class TelegramCounterparty
 
         foreach ($documents as $document)
         {
-            $storage = $document->getStorage()->getName();
-            if (!isset($info[$storage]))
+            $subdivision = $document->getSubdivision()->getName();
+            if (!isset($info[$subdivision]))
             {
-                $info[$storage] = array(
+                $info[$subdivision] = array(
                     'countDeal' => 0, 'newDeal' => 0, 'oldDeal' => 0,
                     'countFiz' => 0, 'newFiz' => 0, 'oldFiz' => 0,
                     'countYr' => 0, 'newYr' => 0, 'oldYr' => 0,
@@ -46,7 +50,7 @@ class TelegramCounterparty
 
             $type = ($document->getCounterparty()->getTypePerson() == 'Физ. лицо')?'Fiz':'Yr';
 
-            $info[$storage] = $this->setInfo($info[$storage], $type, $document->isCounterpartyNew());
+            $info[$subdivision] = $this->setInfo($info[$subdivision], $type, $document->isCounterpartyNew());
         }
 
         $message = "Данные загрузки\n\n";
@@ -55,9 +59,9 @@ class TelegramCounterparty
         $allNewDeal = 0;
         $allOldDeal = 0;
 
-        foreach ($info as $storage => $val)
+        foreach ($info as $subdivision => $val)
         {
-            $message .= "Склад: $storage\n".
+            $message .= "Склад: $subdivision\n".
                 "Сделки - ".$val['countDeal']." \ новые - ".$val['newDeal']." \ старые - ".$val['oldDeal']." \n".
                 "Физ. - ".$val['countFiz']." \ новые - ".$val['newFiz']." \ старые - ".$val['oldFiz']."\n".
                 "Юр. - ".$val['countYr']." \ новые - ".$val['newYr']." \ старые - ".$val['oldYr']."\n\n"
@@ -74,16 +78,19 @@ class TelegramCounterparty
             ['text' => 'Контрагенты', 'url' => 'http://185.135.80.209/admin/app/counterparty/list'],
         )));
 
-        $bot->sendMessage($id, $message, null, false, null, $keyboard);
+        foreach ($ids as $id)
+        {
+            $bot->sendMessage($id, $message, null, false, null, $keyboard);
+        }
     }
 
-    private function setInfo($storage, $type, $status)
+    private function setInfo($subdivision, $type, $status)
     {
         $status = ($status) ? 'new' : 'old';
-        $storage['countDeal']++;
-        $storage[$status.'Deal']++;
-        $storage['count'.$type]++;
-        $storage[$status.$type]++;
-        return $storage;
+        $subdivision['countDeal']++;
+        $subdivision[$status.'Deal']++;
+        $subdivision['count'.$type]++;
+        $subdivision[$status.$type]++;
+        return $subdivision;
     }
 }

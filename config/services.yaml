@@ -1,27 +1,17 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    telegramToken: '5466762200:AAFJ8hFBtazT1Ur-yWkO3uhdGxKycqaHgUA'
-    telegramEvgenij: 716087458
-    telegramMaksim: 528094171
-    crmClientId: "7d26328e-d661-43be-a558-8d70c3bd815d"
-    crmClientSecret: "tZJNNGjaxh0d5td7k2DMhWSdLKddA8fvCYCctcibRud738FadcBPkfYPUXYYt5eV"
-    crmRedirectUri: "https://z32915.adman.cloud/amocrm/get_token"
-    crmCode: "def502001165b1801a6bd4b405a1538e4a37605b1eae65a923cfcbed5983574bdaf34cc126d5c2eed226901adbf70d782aafa453e54e70407afd30b6842e35cc353d91b94937fc53739e88d4301d029cbdc43b46e4f05b8ae2c7c38aea45f44e6c0363a07368d6e84baefd5d2bd1f1dfe34d565846bc5d992db5c9f92301bc1e99e173a086c6e382f7659a66da68d68acfbe8d3a8fccc947717105019ecbe08f64ea88684895908ef65be6fab999fb448041cd206afe8933bb381054c3540f670c165aa838d643d0f12258266f8fbadccb8112a2f111de88b9a6a4cfebe93519bc8335a8f3beca26f4a6e01872dc8be36d2af95f58764bae87e1a644395d010f9edda9d2f1b5ac51ab03684342e685800ed681b9ceb746ee19d38e08cc89e8276de673ab2b60b2649329023eaf81dfac6ed3b52a0c6a252a8e2566cbafc5f29dbf723dff29c617b3793562803d7e095440750f29d9b5ec104d1f8522ac21d28aa80164d7dd1ea19b3f97c4e3e578437999ece2acd83f5a007818446e645bb7a9d3f224fa22e2967b275cf11b7f340b85db64f90f96f3d141ac4804f9440acc4142a09cee809d09188b88ac00888802504d42ceb23701d52f9f814f2a0783f35c8090a05f589ef8b1ca37dafaddb7992597d98c09f534c8"
-    apiKeyMango: '0y3p74cgi34ft64lomwx91f1lduzczc3'
-    apiSaltMango: 'n6il0kr9emexi88wlvjkmpcytxowmqp0'
+    telegramToken: '%env(resolve:TELEGRAM_TOKEN)%'
+    telegramEvgenij: '%env(resolve:TELEGRAM_EVGENIJ)%'
+    telegramMaksim: '%env(resolve:TELEGRAM_MAKSIM)%'
+    crmClientId: '%env(resolve:CRM_CLIENT_ID)%'
+    crmClientSecret: '%env(resolve:CRM_CLIENT_SECRET)%'
+    crmRedirectUri: '%env(resolve:CRM_REDIRECT_URI)%'
+    crmCode: '%env(resolve:CRM_CODE)%'
 
 services:
-    # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
         exclude:

@@ -10,7 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class DocumentParser
 {
-    private $doctrine;
+    private ManagerRegistry $doctrine;
 
     public function __construct(ManagerRegistry $doctrine)
     {

@@ -21,12 +21,18 @@ class ParserRentControlCommand extends Command
     {
         $this
             ->setName('parser:rent')
+            ->addArgument(
+                name: 'date',
+                default: 0,
+            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $link = 'https://www.mosstroyprokat.ru/jsondump/'.date('Y').'_'.date('m').'_'.date('d').'_data.json';
+        $count = $input->getArgument('date');
+        $date = date('Y_m_d', strtotime("-$count day"));
+        $link = 'https://www.mosstroyprokat.ru/jsondump/'.$date.'_data.json';
         $this->rentControl->parserRent($link);
 
         return Command::SUCCESS;

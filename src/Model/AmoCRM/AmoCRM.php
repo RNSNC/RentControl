@@ -14,9 +14,9 @@ class AmoCRM
         $this->deal = $deal;
     }
 
-    public function amoRentControl()
+    public function amoRentControl($datetime)
     {
         $client = $this->client->getClient();
-        $this->deal->processingDealCRM($client);
+        $this->deal->processingDealCRM($client, $datetime);
     }
 }
