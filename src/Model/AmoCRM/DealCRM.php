@@ -37,7 +37,6 @@ class DealCRM
     {
         $documents = $this->doctrine->getRepository(Document::class)->findAllGreaterDate(new DateTime($datetime));
         foreach ($documents as $document ) {
-            if($document->getSubdivision()->getName() != "Мытищи") continue;
             if (!$this->idSubdivision($document)) continue;
             foreach ($document->getCounterparty()->getPhone() as $phone) {
                 $number = '7' . str_replace(' ', '', $phone->getNumber());
@@ -57,14 +56,19 @@ class DealCRM
             if (!isset($number)) continue;
 
             if (!isset($modelCollection)) {
-                $model = $this->newContract($client, $document, $number);
-                $client->leads()->addOne($model);
+                $this->newContract($client, $document, $number);
                 continue;
             }
             $model = $modelCollection->first();
             unset($modelCollection);
 
-            if ($model->getClosedAt()) continue; //Если уже закрыт ранее
+            if ($model->getClosedAt()) { //Если уже закрыт ранее
+                if ($model->getCreatedAt() == $document->getDateCreate()->getTimestamp()) continue;
+                else {
+                    $this->newContract($client, $document, $number);
+                    continue;
+                }
+            }
 
             if ($this->idStatusContract == $model->getStatusId() && $document->isStatus()){ //Уже сушествует и пока открыт
                 continue;
@@ -98,7 +102,7 @@ class DealCRM
         }
     }
 
-    private function newContract(AmoCRMApiClient $client, Document $document, $number): LeadModel
+    private function newContract(AmoCRMApiClient $client, Document $document, $number): void
     {
         $model = new LeadModel();
         $model->setName("Сделка ".$number);
@@ -108,7 +112,7 @@ class DealCRM
         $contact = $this->contactCRM->checkContact($client, $document->getCounterparty());
         $model->setContacts($contact);
 
-        return $model;
+        $client->leads()->addOne($model);
     }
 
     private function editContract(LeadModel $model, Document $document, AmoCRMApiClient $client = null): LeadModel
