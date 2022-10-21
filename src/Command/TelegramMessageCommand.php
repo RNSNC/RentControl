@@ -27,7 +27,7 @@ class TelegramMessageCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $date = date('Y-m-d');
-        $this->telegramCounterparty->sendInChat($date,'telegramEvgenij', 'telegramMaksim');
+        $this->telegramCounterparty->sendInChat($date,'TELEGRAM_1', 'TELEGRAM_2');
 
         return Command::SUCCESS;
     }

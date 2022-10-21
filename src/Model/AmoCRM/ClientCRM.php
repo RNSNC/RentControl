@@ -3,30 +3,23 @@
 namespace App\Model\AmoCRM;
 
 use AmoCRM\Client\AmoCRMApiClient;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class ClientCRM
 {
     private AuthToken $authToken;
 
-    private ParameterBagInterface $parameter;
-
-    public function __construct(
-        AuthToken $authToken,
-        ParameterBagInterface $parameter,
-    )
+    public function __construct(AuthToken $authToken)
     {
         $this->authToken = $authToken;
-        $this->parameter = $parameter;
     }
 
     public function getClient(): AmoCRMApiClient
     {
         $accessToken = $this->authToken->getAccessToken();
         $client = new AmoCRMApiClient(
-            $this->parameter->get('crmClientId'),
-            $this->parameter->get('crmClientSecret'),
-            $this->parameter->get('crmRedirectUri'),
+            $_ENV['CRM_CLIENT_ID'],
+            $_ENV['CRM_CLIENT_SECRET'],
+            $_ENV['CRM_REDIRECT_URI'],
         );
 
         $client

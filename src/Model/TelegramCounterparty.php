@@ -5,31 +5,24 @@ namespace App\Model;
 use App\Entity\Document;
 use TelegramBot\Api\BotApi;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 class TelegramCounterparty
 {
-    private ParameterBagInterface $parameter;
-
     private ManagerRegistry $doctrine;
 
-    public function __construct(
-        ParameterBagInterface $parameterBag,
-        ManagerRegistry $doctrine,
-    )
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $this->parameter = $parameterBag;
         $this->doctrine = $doctrine;
     }
 
     public function sendInChat($date, ...$parameters)
     {
-        $bot = new BotApi($this->parameter->get('telegramToken'));
+        $bot = new BotApi($_ENV['TELEGRAM_TOKEN']);
         $ids = array();
         foreach ($parameters as $parameter)
         {
-            $ids[] = $this->parameter->get($parameter);
+            $ids[] = $_ENV[$parameter];
         }
 
         $documents = $this->doctrine->getRepository(Document::class)->findAllGreaterDate(['dateCreate'=> $date]);

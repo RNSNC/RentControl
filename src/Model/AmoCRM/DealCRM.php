@@ -2,7 +2,11 @@
 
 namespace App\Model\AmoCRM;
 
+use AmoCRM\Collections\Leads\LeadsCollection;
 use AmoCRM\Exceptions\AmoCRMApiNoContentException;
+use AmoCRM\Models\CustomFieldsValues\NumericCustomFieldValuesModel;
+use AmoCRM\Models\CustomFieldsValues\ValueCollections\NumericCustomFieldValueCollection;
+use AmoCRM\Models\CustomFieldsValues\ValueModels\NumericCustomFieldValueModel;
 use App\Entity\Document;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
@@ -43,16 +47,14 @@ class DealCRM
                 try {
                     $modelCollection = $client->leads()->get(
                         (new ShiftLeadsFilter())
-                            ->setNames('Сделка ' . $number)
+                            ->setNames('Сделка ' . $number) //поиск сделки по названию
                             ->setWith('contacts')
                             ->setOrder('created_at','desc')
                     );
-                    break;
                 } catch (AmoCRMApiNoContentException) {
                     continue;
                 }
             }
-
             if (!isset($number)) continue;
 
             if (!isset($modelCollection)) {
@@ -63,11 +65,14 @@ class DealCRM
             unset($modelCollection);
 
             if ($model->getClosedAt()) { //Если уже закрыт ранее
-                if ($model->getCreatedAt() == $document->getDateCreate()->getTimestamp()) continue;
-                else {
-                    $this->newContract($client, $document, $number);
-                    continue;
-                }
+                if ($model->getCreatedAt() == $document->getDateCreate()->getTimestamp()) continue; //совпадает дата открытия
+                $this->newContract($client, $document, $number);
+                continue;
+            }
+
+            if ($document->getDocumentNumber() != $this->getDocumentNumber($model)){ //другой номер документа
+                $this->newContract($client, $document, $number);
+                continue;
             }
 
             if ($this->idStatusContract == $model->getStatusId() && $document->isStatus()){ //Уже сушествует и пока открыт
@@ -79,6 +84,18 @@ class DealCRM
             }
             $client->leads()->updateOne($oldDocument);
         }
+    }
+
+    private function getDocumentNumber(LeadModel $model): int|string|null
+    {
+        $values = $model->getCustomFieldsValues();
+        foreach ($values as $value)
+        {
+            if ($value->getFieldId() == 215439){
+                return $value->getValues()->first()->getValue();
+            }
+        }
+        return null;
     }
 
     private function idSubdivision(Document $document): bool

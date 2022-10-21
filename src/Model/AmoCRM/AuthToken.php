@@ -6,22 +6,15 @@ use App\Entity\TokenCRM;
 use Doctrine\Persistence\ManagerRegistry;
 use GuzzleHttp\Client;
 use League\OAuth2\Client\Token\AccessToken;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use DateTime;
 
 class AuthToken
 {
     private ManagerRegistry $doctrine;
 
-    private ParameterBagInterface $parameter;
-
-    public function __construct(
-        ManagerRegistry $doctrine,
-        ParameterBagInterface $parameter,
-    )
+    public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
-        $this->parameter = $parameter;
     }
 
     public function getAccessToken(): AccessToken
@@ -29,7 +22,7 @@ class AuthToken
         $token = $this->getDataToken();
 
         if (!$token || $token->getDateRefreshToken() < new DateTime() ) {
-            $this->setNewToken("authorization_code", $this->parameter->get('crmCode'));
+            $this->setNewToken("authorization_code", $_ENV['CRM_CODE']);
             $token = $this->getDataToken();
         }
 
@@ -54,11 +47,11 @@ class AuthToken
             'POST',
             'https://prokatm.amocrm.ru/oauth2/access_token',
             array('form_params' => [
-                "client_id" => $this->parameter->get('crmClientId'),
-                "client_secret" => $this->parameter->get('crmClientSecret'),
+                "client_id" => $_ENV['CRM_CLIENT_ID'],
+                "client_secret" => $_ENV['CRM_CLIENT_SECRET'],
                 "grant_type" => $grantType,
                 $parameter => $code,
-                "redirect_uri" => $this->parameter->get('crmRedirectUri'),
+                "redirect_uri" => $_ENV['CRM_REDIRECT_URI'],
             ])
         );
 

@@ -1,11 +1,4 @@
 parameters:
-    telegramToken: '%env(resolve:TELEGRAM_TOKEN)%'
-    telegramEvgenij: '%env(resolve:TELEGRAM_EVGENIJ)%'
-    telegramMaksim: '%env(resolve:TELEGRAM_MAKSIM)%'
-    crmClientId: '%env(resolve:CRM_CLIENT_ID)%'
-    crmClientSecret: '%env(resolve:CRM_CLIENT_SECRET)%'
-    crmRedirectUri: '%env(resolve:CRM_REDIRECT_URI)%'
-    crmCode: '%env(resolve:CRM_CODE)%'
 
 services:
     _defaults:
