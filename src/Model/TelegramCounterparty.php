@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Entity\Document;
+use JetBrains\PhpStorm\ArrayShape;
 use TelegramBot\Api\BotApi;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,22 +12,39 @@ class TelegramCounterparty
 {
     private ManagerRegistry $doctrine;
 
+    private BotApi $bot;
+
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
+        $this->bot = new BotApi($_ENV['TELEGRAM_TOKEN']);
     }
 
-    public function sendInChat($date, ...$parameters)
+    public function sendInChat($date1, $date2, $id)
     {
-        $bot = new BotApi($_ENV['TELEGRAM_TOKEN']);
+        $message = $this->prepareMessage($date1, $date2);
+        $this->bot->sendMessage($id, $message['message'], replyMarkup: $message['keyboard']);
+    }
+
+    public function sendInChats($date, ...$parameters)
+    {
         $ids = array();
         foreach ($parameters as $parameter)
         {
             $ids[] = $_ENV[$parameter];
         }
 
-        $documents = $this->doctrine->getRepository(Document::class)->findAllGreaterDate(['dateCreate'=> $date]);
+        $message = $this->prepareMessage($date, date('Y-m-d'));
 
+        foreach ($ids as $id)
+        {
+            $this->bot->sendMessage($id, $message['message'], replyMarkup: $message['keyboard']);
+        }
+    }
+
+    public function prepareMessage($date1, $date2): array
+    {
+        $documents = $this->doctrine->getRepository(Document::class)->findIntervalDate($date1, $date2);
         $info = array();
 
         foreach ($documents as $document)
@@ -71,10 +89,10 @@ class TelegramCounterparty
             ['text' => 'Контрагенты', 'url' => 'http://185.135.80.209/admin/app/counterparty/list'],
         )));
 
-        foreach ($ids as $id)
-        {
-            $bot->sendMessage($id, $message, null, false, null, $keyboard);
-        }
+        return [
+            'message' => $message,
+            'keyboard' => $keyboard,
+        ];
     }
 
     private function setInfo($subdivision, $type, $status)

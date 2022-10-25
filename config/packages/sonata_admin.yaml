@@ -3,6 +3,11 @@ sonata_admin:
     dashboard:
         blocks:
             - { type: sonata.admin.block.admin_list, position: left }
+            -
+                type: sonata.block.service.text
+                position: right
+                settings:
+                    template: Sonata/telegram.html.twig
 
 sonata_block:
     blocks:

@@ -21,13 +21,18 @@ class TelegramMessageCommand extends Command
     {
         $this
             ->setName('telegram')
+            ->addArgument(
+                name: 'date',
+                default: 0,
+            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $date = date('Y-m-d');
-        $this->telegramCounterparty->sendInChat($date,'TELEGRAM_1', 'TELEGRAM_2');
+        $count = $input->getArgument('date');
+        $date = date('Y-m-d', strtotime("-$count day"));
+        $this->telegramCounterparty->sendInChats($date,'TELEGRAM_1', 'TELEGRAM_2');
 
         return Command::SUCCESS;
     }

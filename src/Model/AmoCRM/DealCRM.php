@@ -2,11 +2,7 @@
 
 namespace App\Model\AmoCRM;
 
-use AmoCRM\Collections\Leads\LeadsCollection;
 use AmoCRM\Exceptions\AmoCRMApiNoContentException;
-use AmoCRM\Models\CustomFieldsValues\NumericCustomFieldValuesModel;
-use AmoCRM\Models\CustomFieldsValues\ValueCollections\NumericCustomFieldValueCollection;
-use AmoCRM\Models\CustomFieldsValues\ValueModels\NumericCustomFieldValueModel;
 use App\Entity\Document;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
@@ -51,6 +47,7 @@ class DealCRM
                             ->setWith('contacts')
                             ->setOrder('created_at','desc')
                     );
+                    break;
                 } catch (AmoCRMApiNoContentException) {
                     continue;
                 }
@@ -70,9 +67,11 @@ class DealCRM
                 continue;
             }
 
-            if ($document->getDocumentNumber() != $this->getDocumentNumber($model)){ //другой номер документа
-                $this->newContract($client, $document, $number);
-                continue;
+            if ($this->getDocumentNumber($model)) {
+                if ($document->getDocumentNumber() != $this->getDocumentNumber($model)){ //другой номер документа
+                    $this->newContract($client, $document, $number);
+                    continue;
+                }
             }
 
             if ($this->idStatusContract == $model->getStatusId() && $document->isStatus()){ //Уже сушествует и пока открыт

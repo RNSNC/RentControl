@@ -51,4 +51,16 @@ class DocumentRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findIntervalDate($valOne, $valTwo)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.dateCreate >= :val1')
+            ->andWhere('d.dateCreate <= :val2')
+            ->setParameter('val1', $valOne)
+            ->setParameter('val2', $valTwo)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
