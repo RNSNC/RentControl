@@ -1,13 +1,40 @@
 {% extends sonata_block.templates.block_base %}
 
 {% block block %}
-    <h4>Данные о загрузке в телеграм бот</h4>
-    <label for="date1">С</label>
-    <input type="date" id="date1" name="date1"><br>
-    <label for="date2">По</label>
-    <input type="date" id="date2" name="date2"><br>
-    <input type="submit" id="submit_telegram">
-    <div id="message_telegram" style="color: red"></div>
+    <div class="box">
+        <div class="box-header">
+            <h3 class="box-title">Данные о загрузке в телеграм бот</h3>
+        </div>
+        <div class="box-body">
+            <div>
+                <div style="float: left; width: 15%; height: 50px; text-align: right; padding: 8px">
+                    <label for="date1">С</label>
+                </div>
+                <div style="float: left; width: 33%; height: 50px">
+                    <input type="date" id="date1" name="date1" class="form-control">
+                </div>
+                <div style="float: left; width: 52%; height: 50px"></div>
+            </div>
+            <div>
+                <div style="float: left; width: 15%; height: 50px; text-align: right; padding: 8px">
+                    <label for="date2">По</label>
+                </div>
+                <div style="float: left; width: 33%; height: 50px">
+                    <input type="date" id="date2" name="date2" class="form-control">
+                </div>
+                <div style="float: left; width: 52%; height: 50px"></div>
+            </div>
+            <div>
+                <div style="float: left; width: 15%; height: 50px"></div>
+                <div style="float: left; width: 33%; height: 50px">
+                    <input type="submit" id="submit_telegram" class="btn btn-primary">
+                </div>
+                <div style="float: left; width: 52%; height: 50px"></div>
+            </div>
+            <div id="message_telegram" style="color: red"></div>
+        </div>
+    </div>
+
     <script>
         $('#submit_telegram').click(function (){
             let date1 = $('#date1').val(),

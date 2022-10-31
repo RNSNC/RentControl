@@ -3,7 +3,6 @@
 namespace App\Model;
 
 use App\Entity\Document;
-use JetBrains\PhpStorm\ArrayShape;
 use TelegramBot\Api\BotApi;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
 use Doctrine\Persistence\ManagerRegistry;
@@ -34,7 +33,7 @@ class TelegramCounterparty
             $ids[] = $_ENV[$parameter];
         }
 
-        $message = $this->prepareMessage($date, date('Y-m-d'));
+        $message = $this->prepareMessage($date, date('Y-m-d', strtotime('+1 day')));
 
         foreach ($ids as $id)
         {

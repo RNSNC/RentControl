@@ -17,7 +17,7 @@ class TelegramAdminController extends AbstractController
         $date2 = $request->query->get('date2');
         if (!$date1 || !$date2) return new Response('Выберите дату!');
         $id = $_ENV['TELEGRAM_1'];
-        $telegramCounterparty->sendInChat($date1, $date2, $id);
+        $telegramCounterparty->sendInChat($date1, date('Y-m-d',strtotime($date2.'+1 day')), $id);
         return new Response('Сообщение доставлено');
     }
 }
