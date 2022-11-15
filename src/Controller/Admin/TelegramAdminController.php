@@ -11,13 +11,13 @@ use App\Model\TelegramCounterparty;
 class TelegramAdminController extends AbstractController
 {
     #[Route('/admin/telegram_ajax', name: 'telegram_ajax')]
-    public function findStructureAjax(Request $request, TelegramCounterparty $telegramCounterparty): Response
+    public function telegramAjax(Request $request, TelegramCounterparty $telegramCounterparty): Response
     {
         $date1 = $request->query->get('date1');
         $date2 = $request->query->get('date2');
-        if (!$date1 || !$date2) return new Response('Выберите дату!');
+        if (!$date1 || !$date2) return new Response('{"message":"Выберите дату!","color":"red"}');
         $id = $_ENV['TELEGRAM_1'];
         $telegramCounterparty->sendInChat($date1, date('Y-m-d',strtotime($date2.'+1 day')), $id);
-        return new Response('Сообщение доставлено');
+        return new Response('{"message":"Сообщение доставлено","color":"green"}');
     }
 }

@@ -31,7 +31,8 @@
                 </div>
                 <div style="float: left; width: 52%; height: 50px"></div>
             </div>
-            <div id="message_telegram" style="color: red"></div>
+                <div id="message_telegram" style="margin-left: 15%"></div>
+            </div>
         </div>
     </div>
 
@@ -40,8 +41,9 @@
             let date1 = $('#date1').val(),
                 date2 = $('#date2').val();
             $.get('/admin/telegram_ajax', {date1: date1, date2: date2}, function (data){
-                $('#message_telegram').text(data);
+                let response = eval('('+data+')');
+                $('#message_telegram').css({'color' : response.color}).text(response.message);
             });
-        })
+        });
     </script>
 {% endblock %}

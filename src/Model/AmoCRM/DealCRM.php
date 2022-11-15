@@ -14,6 +14,8 @@ use DateTime;
 
 class DealCRM
 {
+    private AmoCRMApiClient $client;
+
     private ManagerRegistry $doctrine;
 
     private ValuesCRM $valuesCRM;
@@ -35,54 +37,62 @@ class DealCRM
 
     public function processingDealCRM(AmoCRMApiClient $client, $datetime): void
     {
+        $this->client = $client;
         $documents = $this->doctrine->getRepository(Document::class)->findAllGreaterDate(new DateTime($datetime));
         foreach ($documents as $document ) {
-            if (!$this->idSubdivision($document)) continue;
-            foreach ($document->getCounterparty()->getPhone() as $phone) {
-                $number = '7' . str_replace(' ', '', $phone->getNumber());
-                try {
-                    $modelCollection = $client->leads()->get(
-                        (new ShiftLeadsFilter())
-                            ->setNames('Сделка ' . $number) //поиск сделки по названию
-                            ->setWith('contacts')
-                            ->setOrder('created_at','desc')
-                    );
+            $this->idSubdivision($document); //сохраняем ид склада
+            $data = $this->findDocument($document->getCounterparty()->getPhone()); //находим сделку и номер
+
+            if (!isset($data['number'])) continue;
+
+            if (!isset($data['leads'])) { //Ничего не нашло, создаём новую
+                $this->newContract($document, $data['number']);
+                continue;
+            }
+
+            foreach ($data['leads'] as $lead) //возможно, найдем по номеру документа
+            {
+                if ($this->getDocumentNumber($lead) == $document->getDocumentNumber()){
+                    $model = $lead;
                     break;
-                } catch (AmoCRMApiNoContentException) {
-                    continue;
                 }
             }
-            if (!isset($number)) continue;
 
-            if (!isset($modelCollection)) {
-                $this->newContract($client, $document, $number);
-                continue;
-            }
-            $model = $modelCollection->first();
-            unset($modelCollection);
-
-            if ($model->getClosedAt()) { //Если уже закрыт ранее
-                if ($model->getCreatedAt() == $document->getDateCreate()->getTimestamp()) continue; //совпадает дата открытия
-                $this->newContract($client, $document, $number);
-                continue;
-            }
+            if (!isset($model)) $model = $data['leads']->first();
+            unset($data['leads']);
 
             if ($this->getDocumentNumber($model)) {
                 if ($document->getDocumentNumber() != $this->getDocumentNumber($model)){ //другой номер документа
-                    $this->newContract($client, $document, $number);
-                    continue;
-                }
+                    $this->newContract($document, $data['number']);
+                }elseif ($this->idStatusContract == $model->getStatusId() && !$document->isStatus()){//Нужно закрыть документ
+                    $this->successContract($model, $document);
+                }//ничего не меняется
+            } else {
+                $this->client->leads()->updateOne(//Перенести в "Договор"
+                    $this->editContract($model, $document, true)
+                );
             }
-
-            if ($this->idStatusContract == $model->getStatusId() && $document->isStatus()){ //Уже сушествует и пока открыт
-                continue;
-            }else{
-                if ($this->idStatusContract == $model->getStatusId() && !$document->isStatus()) { //Нужно закрыть документ
-                    $oldDocument = $this->successContract($model, $document);
-                }else $oldDocument = $this->editContract($model, $document, $client); //Перенести в "Договор"
-            }
-            $client->leads()->updateOne($oldDocument);
+            unset($model);
         }
+    }
+
+    private function findDocument($phones): array //поиск
+    {
+        foreach ($phones as $phone) {
+            $number = '7' . str_replace(' ', '', $phone->getNumber());
+            try {
+                return ['leads' => $this->client->leads()->get(
+                    (new ShiftLeadsFilter())
+                        ->setNames('Сделка ' . $number) //поиск сделки по названию
+                        ->setWith('contacts')
+                        ->setOrder('created_at','desc')
+                ), 'number' => $number];
+            } catch (AmoCRMApiNoContentException) {
+                continue;
+            }
+        }
+        if (isset($number)) return ['number' => $number];
+        return [];
     }
 
     private function getDocumentNumber(LeadModel $model): int|string|null
@@ -97,41 +107,41 @@ class DealCRM
         return null;
     }
 
-    private function idSubdivision(Document $document): bool
+    private function idSubdivision(Document $document): void
     {
         switch ($document->getSubdivision()->getName())
         {
             case "Рябиновая":
                 $this->idPipeline = 5603961;
                 $this->idStatusContract = 49417665;
-                return true;
+                break;
             case "Мытищи":
                 $this->idPipeline = 1952752;
                 $this->idStatusContract = 29186470;
-                return true;
+                break;
             case "РУБЛЕВСКОЕ":
                 $this->idPipeline = 2127313;
                 $this->idStatusContract = 30456559;
-                return true;
+                break;
             default:
-                return false;
+                break;
         }
     }
 
-    private function newContract(AmoCRMApiClient $client, Document $document, $number): void
+    private function newContract(Document $document, $number): void
     {
         $model = new LeadModel();
         $model->setName("Сделка ".$number);
 
         $model = $this->editContract($model, $document);
 
-        $contact = $this->contactCRM->checkContact($client, $document->getCounterparty());
+        $contact = $this->contactCRM->checkContact($this->client, $document->getCounterparty());
         $model->setContacts($contact);
 
-        $client->leads()->addOne($model);
+        $this->client->leads()->addOne($model);
     }
 
-    private function editContract(LeadModel $model, Document $document, AmoCRMApiClient $client = null): LeadModel
+    private function editContract(LeadModel $model, Document $document, bool $contract = false): LeadModel
     {
         $idStatus = ($document->isStatus()) ? $this->idStatusContract : $this->idStatusClosed;
         $model->setPrice($document->getSummaArenda());
@@ -145,14 +155,14 @@ class DealCRM
         $tags = $this->setTags($document->getRent());
         $values = $this->valuesCRM->setValuesDocument($document);
 
-        if ($client) {
+        if ($contract) {
             $values->add($this->valuesCRM->setFindDeal());
             if($model->getContacts()) {
                 $contact = $this->contactCRM->setContact(
                     $model->getContacts()->first(),
                     $document->getCounterparty(),
                 );
-                $client->contacts()->updateOne($contact);
+                $this->client->contacts()->updateOne($contact);
             }
         }
 
@@ -162,11 +172,11 @@ class DealCRM
         return $model;
     }
 
-    private function successContract(LeadModel $model, Document $document): LeadModel
+    private function successContract(LeadModel $model, Document $document): void
     {
         $model->setClosedAt($document->getDateClose()->getTimestamp());
         $model->setStatusId($this->idStatusClosed);
-        return $model;
+        $this->client->leads()->updateOne($model);
     }
 
     private function setTags(Collection $rents): TagsCollection
