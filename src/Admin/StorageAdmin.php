@@ -42,6 +42,7 @@ class StorageAdmin extends AbstractAdmin
         $show
             ->add('idSklad')
             ->add('name')
+            ->add('documentsCount')
             ->add('documents')
         ;
     }

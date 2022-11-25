@@ -84,6 +84,16 @@ class Counterparty
      */
     private $documents;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateLastRent;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $sumRents;
+
     public function __construct()
     {
         $this->phone = new ArrayCollection();
@@ -92,7 +102,7 @@ class Counterparty
 
     public function __toString()
     {
-        return $this->title;
+        return $this->titleFull;
     }
 
     public function getId(): ?int
@@ -288,5 +298,56 @@ class Counterparty
         }
 
         return $this;
+    }
+
+    public function getDateLastRent(): ?\DateTimeInterface
+    {
+        return $this->dateLastRent;
+    }
+
+    public function setDateLastRent(?\DateTimeInterface $dateLastRent): self
+    {
+        $this->dateLastRent = $dateLastRent;
+
+        return $this;
+    }
+
+    public function getSumRents(): ?string
+    {
+        return $this->sumRents;
+    }
+
+    public function setSumRents(?string $sumRents): self
+    {
+        $this->sumRents = $sumRents;
+
+        return $this;
+    }
+
+    public function getCountRents(): ?array
+    {
+        $documents = $this->getDocuments();
+        $count = [
+            'all' => count($documents),
+            'rub' => 0,
+            'myt' => 0,
+            'rab' => 0,
+        ];
+        foreach ($documents as $document)
+        {
+            switch ($document->getSubdivision()->getName()) {
+                case 'РУБЛЕВСКОЕ':
+                    $count['rub']++;
+                    break;
+                case 'Мытищи':
+                    $count['myt']++;
+                    break;
+                case 'Рябиновая':
+                    $count['rab']++;
+                    break;
+            }
+        }
+
+        return $count;
     }
 }

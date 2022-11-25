@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\DoctrineORMAdminBundle\Filter\DateRangeFilter;
 
 class CounterpartyAdmin extends AbstractAdmin
 {
@@ -20,6 +21,7 @@ class CounterpartyAdmin extends AbstractAdmin
             ->add('typePerson')
             ->add('phone')
             ->add('dateCreate')
+            ->add('dateLastRent')
         ;
     }
 
@@ -27,24 +29,56 @@ class CounterpartyAdmin extends AbstractAdmin
     {
         $filter
             ->add('idCounterparty')
-            ->add('title')
-            ->add('titleFull')
+            ->add('titleFull',null,[
+                'label' => 'Title',
+            ])
             ->add('inn')
             ->add('typePerson')
-            ->add('dateCreate')
+            ->add('dateCreate',DateRangeFilter::class,[
+                'field_options' => [
+                    'field_options' => [
+                        'widget' => 'single_text',
+                    ],
+                ],
+            ])
+            ->add('dateLastRent',DateRangeFilter::class,[
+                'field_options' => [
+                    'field_options' => [
+                        'widget' => 'single_text',
+                    ],
+                ],
+            ])
         ;
     }
 
     protected function configureListFields(ListMapper $list): void
     {
         $list
-            ->add('idCounterparty')
-            ->addIdentifier('title')
-            ->addIdentifier('titleFull')
-            ->add('inn')
+            ->add('_action', 'actions',[
+                'actions' => [
+                    'show' => [],
+                ],
+                'label' => false,
+            ])
+            ->add('titleFull',null,[
+                'label' => 'Title',
+            ])
             ->add('typePerson')
             ->add('phone')
-            ->add('dateCreate')
+            ->add('dateCreate',null,[
+                'format' => 'd.m.Y',
+            ])
+            ->add('dateLastRent',null,[
+                'format' => 'd.m.Y',
+            ])
+            ->add('sumRents',null,[
+                'sort_field_mapping' => [
+                    'fieldName' => 'sumRents+0',
+                ],
+            ])
+            ->add('countRents',null,[
+                'template' => 'Sonata/count_rents.html.twig',
+            ])
         ;
     }
 
@@ -68,6 +102,8 @@ class CounterpartyAdmin extends AbstractAdmin
         }
         $show
             ->add('dateCreate')
+            ->add('dateLastRent')
+            ->add('sumRents')
             ->add('documents')
         ;
     }

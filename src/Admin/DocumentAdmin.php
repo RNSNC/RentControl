@@ -61,13 +61,13 @@ class DocumentAdmin extends AbstractAdmin
             ->add('subdivision', null, [
                 'show_filter' => true,
             ])
-            ->add('rent.instrumentName', null,[
-                'show_filter' => true,
-                'label' => 'Instrument Name',
-            ])
             ->add('rent.instrumentName.instrumentGroup', null,[
                 'show_filter' => true,
                 'label' => 'Instrument Group',
+            ])
+            ->add('rent.instrumentName', null,[
+                'show_filter' => true,
+                'label' => 'Instrument Name',
             ])
         ;
     }
@@ -81,12 +81,11 @@ class DocumentAdmin extends AbstractAdmin
                 ],
                 'label' => false,
             ])
+            ->add('counterparty')
             ->add('status',null,[
                 'label' => 'Opened',
             ])
             ->add('counterpartyNew')
-            ->add('summaDok')
-            ->add('summaZalog')
             ->add('summaArenda')
             ->add('dateCreate',null,[
                 'format' => 'd.m.Y',

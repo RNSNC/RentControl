@@ -1,0 +1,9 @@
+{% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
+
+{% block field %}
+    {% set count = object.countRents %}
+    {% if count.all %} Всего:&nbsp;{{ count.all }}<br>{% endif %}
+    {% if count.rub %} Рублевское:&nbsp;{{ count.rub }}<br>{% endif %}
+    {% if count.myt %} Мытищи:&nbsp;{{ count.myt }}<br>{% endif %}
+    {% if count.rab %} Рябиновая:&nbsp;{{ count.rab }}<br>{% endif %}
+{% endblock %}

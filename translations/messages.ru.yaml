@@ -56,3 +56,7 @@ Zalog: Залог
 Id Sklad: Ид склада
 Documents Count: Количество документов
 Instrument Name Instrument Group: Группа инструмента
+Date Last Rent : Последняя аренда
+Sum Rents: Сумма аренд
+Count Documents: Количество документов
+Count Rents: Количество аренд

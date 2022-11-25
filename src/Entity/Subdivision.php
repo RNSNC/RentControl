@@ -94,4 +94,9 @@ class Subdivision
 
         return $this;
     }
+
+    public function getCountDocuments(): int
+    {
+        return count($this->documents);
+    }
 }

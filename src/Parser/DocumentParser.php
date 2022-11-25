@@ -76,7 +76,14 @@ class DocumentParser
         ;
         if ($document->getSummaDok() != $data['dok']) $document->setSummaDok($data['dok']);
         if ($document->getSummaZalog() != $data['zalog']) $document->setSummaZalog($data['zalog']);
-        if ($document->getSummaArenda() != $data['arenda']) $document->setSummaArenda($data['arenda']);
+        if ($document->getSummaArenda() != $data['arenda']){
+            $oldSum = $document->getCounterparty()->getSumRents();
+            $oldSum -= $document->getSummaArenda();
+            $document->getCounterparty()->setSumRents(
+                $oldSum + $data['arenda']
+            );
+            $document->setSummaArenda($data['arenda']);
+        }
         $this->doctrine->getManager()->persist($document);
     }
 
@@ -101,6 +108,12 @@ class DocumentParser
             $document->setDateClose($data['dateClose']);
             $document->setDuration($data['duration']);
         }
+        $data['counterparty']
+            ->setDateLastRent($data['dateCreate'])
+            ->setSumRents(
+                $data['counterparty']->getSumRents() + $data['arenda']
+            )
+        ;
 
         $this->doctrine->getManager()->persist($document);
     }

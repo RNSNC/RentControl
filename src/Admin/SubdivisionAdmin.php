@@ -32,8 +32,8 @@ class SubdivisionAdmin extends AbstractAdmin
     {
         $list
             ->add('idSubdivision')
-            ->add('name')
-            ->add('documents')
+            ->addIdentifier('name')
+            ->add('countDocuments')
         ;
     }
 
@@ -42,6 +42,7 @@ class SubdivisionAdmin extends AbstractAdmin
         $show
             ->add('idSubdivision')
             ->add('name')
+            ->add('countDocuments')
             ->add('documents')
         ;
     }
